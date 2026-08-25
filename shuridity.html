@@ -3345,3 +3345,560 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+/* =========================================================
+   Category Progress Cards
+   ========================================================= */
+
+.status-cards {
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    width: 100%;
+    margin-top: 4px;
+
+}
+
+.status-card {
+
+    padding: 18px;
+    background: var(--card-alt);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    box-shadow:
+        0 0 20px rgba(0, 245, 255, 0.03),
+        inset 0 0 20px rgba(0, 245, 255, 0.02);
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+
+}
+
+.status-card:hover {
+
+    border-color: rgba(0, 245, 255, 0.35);
+    box-shadow:
+        0 0 20px rgba(0, 245, 255, 0.08),
+        inset 0 0 20px rgba(0, 245, 255, 0.03);
+    transform: translateY(-2px);
+
+}
+
+.status-header {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+
+}
+
+.status-header strong {
+
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: #ffffff;
+
+}
+
+.status-progress-text {
+
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #748392;
+
+}
+
+.status-progress-bar {
+
+    width: 100%;
+    height: 6px;
+    overflow: hidden;
+    background: #050a11;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+
+}
+
+.status-progress-fill {
+
+    width: 0%;
+    height: 100%;
+    background: var(--cyan);
+    border-radius: inherit;
+    box-shadow:
+        0 0 8px rgba(0, 245, 255, 0.65),
+        0 0 16px rgba(0, 245, 255, 0.25);
+    transition:
+        width 0.4s ease;
+
+}
+
+/* Per-category accents for the three fixed progress cards */
+
+.status-card[data-category="work"] {
+    border-color: rgba(0, 245, 255, 0.22);
+}
+
+.status-card[data-category="work"] .status-progress-fill {
+    background: var(--cyan);
+    box-shadow:
+        0 0 8px rgba(0, 245, 255, 0.65),
+        0 0 16px rgba(0, 245, 255, 0.25);
+}
+
+.status-card[data-category="study"] {
+    border-color: rgba(255, 230, 0, 0.22);
+}
+
+.status-card[data-category="study"] .status-progress-fill {
+    background: var(--yellow);
+    box-shadow:
+        0 0 8px rgba(255, 230, 0, 0.65),
+        0 0 16px rgba(255, 230, 0, 0.25);
+}
+
+.status-card[data-category="health"] {
+    border-color: rgba(57, 255, 136, 0.22);
+}
+
+.status-card[data-category="health"] .status-progress-fill {
+    background: var(--green);
+    box-shadow:
+        0 0 8px rgba(57, 255, 136, 0.65),
+        0 0 16px rgba(57, 255, 136, 0.25);
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+
+.footer {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    margin-top: 8px;
+    padding: 16px 22px;
+    background: var(--card-deep);
+    border-top: 1px solid rgba(0, 245, 255, 0.18);
+    border-radius: 8px;
+
+}
+
+.footer p {
+
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #748392;
+    letter-spacing: 0.4px;
+
+}
+
+.footer p:first-child {
+
+    color: #aebbc7;
+
+}
+
+.footer p:nth-child(2) {
+
+    color: var(--yellow);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+
+}
+
+.footer a {
+
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--cyan);
+    text-decoration: none;
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+
+}
+
+.footer a:hover {
+
+    color: #ffffff;
+    text-shadow:
+        0 0 8px rgba(0, 245, 255, 0.8),
+        0 0 16px rgba(0, 245, 255, 0.35);
+
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+/* Large desktop / laptop */
+@media (max-width: 1366px) {
+
+    .task-info {
+        gap: 12px;
+    }
+
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+
+    body {
+        padding: 32px 28px 48px;
+    }
+
+    .task-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .status-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+/* Small tablet / large phone */
+@media (max-width: 768px) {
+
+    body {
+        padding: 24px 18px 40px;
+    }
+
+    .header {
+        padding: 14px 18px;
+    }
+
+    .title {
+        font-size: 16px;
+    }
+
+    .task-info {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .task-info > div {
+        min-height: 88px;
+        padding: 14px;
+    }
+
+    .task-info span {
+        font-size: 21px;
+    }
+
+    .status-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .category-content {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+}
+
+/* Mobile */
+@media (max-width: 425px) {
+
+    body {
+        padding: 18px 14px 34px;
+    }
+
+    .header {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 14px 16px;
+    }
+
+    .task-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .inputs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-bar,
+    .todo-type,
+    .priority,
+    .add-btn {
+        width: 100%;
+    }
+
+    .sections {
+        gap: 6px;
+    }
+
+    .section {
+        min-width: 0;
+        padding: 0 8px;
+    }
+
+    .section p {
+        font-size: 10px;
+    }
+
+    .category-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .categorylist {
+        width: 100%;
+    }
+
+    .pie-chart {
+        width: 130px;
+        height: 130px;
+    }
+
+    .pie-chart::after {
+        width: 70px;
+        height: 70px;
+    }
+
+}
+
+@media (max-width: 375px) {
+
+    .task-info {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+ /* =========================================================
+   Productivity Calendar
+   ========================================================= */
+
+.activity-calendar {
+    width: 100%;
+    margin-top: 20px;
+    padding: 22px;
+    box-sizing: border-box;
+    background: #080d15;
+    border: 1px solid rgba(0, 245, 255, 0.18);
+    border-radius: 10px;
+    box-shadow:
+        0 0 20px rgba(0, 245, 255, 0.03),
+        inset 0 0 20px rgba(0, 245, 255, 0.02);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.calendar-title {
+    margin: 0 0 5px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+}
+
+.calendar-title::before {
+    content: "//";
+    margin-right: 7px;
+    color: #00f5ff;
+}
+
+#calendar-range {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #748392;
+}
+
+.calendar-picker-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 230, 0, 0.35);
+    border-radius: 7px;
+    background: rgba(255, 230, 0, 0.06);
+    color: #ffe600;
+    font-size: 17px;
+    cursor: pointer;
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+.calendar-picker-btn:hover {
+    background: rgba(255, 230, 0, 0.12);
+    border-color: #ffe600;
+    box-shadow:
+        0 0 15px rgba(255, 230, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+.calendar-picker {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* Calendar container */
+
+.calendar-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+
+/* Individual month */
+
+.calendar-month {
+    flex-shrink: 0;
+    padding: 14px;
+    background: #050a11;
+    border: 1px solid rgba(0, 245, 255, 0.12);
+    border-radius: 8px;
+}
+
+.calendar-month-title {
+    margin: 0 0 14px;
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #ffe600;
+}
+
+
+/* Month grid */
+
+.calendar-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 18px);
+    gap: 5px;
+}
+
+
+/* Weekday */
+
+.calendar-day-name {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 7px;
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    color: #687786;
+}
+
+
+/* Date cell */
+
+.calendar-cell {
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(0, 245, 255, 0.12);
+    border-radius: 3px;
+    background: #0b121c;
+    cursor: pointer;
+    transition:
+
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.calendar-cell:hover {
+    border-color: #00f5ff;
+    background: rgba(0, 245, 255, 0.15);
+    box-shadow:
+        0 0 8px rgba(0, 245, 255, 0.35);
+    transform: scale(1.08);
+}
+
+
+/* Empty cell */
+
+.calendar-cell.empty {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+
+/* Today */
+
+.calendar-cell.today {
+
+    border-color: #ffe600;
+    box-shadow:
+        0 0 8px rgba(255, 230, 0, 0.45);
+}
+
+
+/* Completed activity */
+
+.calendar-cell.completed {
+    background: #00f5ff;
+    border-color: #00f5ff;
+    box-shadow:
+        0 0 8px rgba(0, 245, 255, 0.6);
+}
+
+
+/* Scrollbar */
+
+.calendar-wrapper::-webkit-scrollbar {
+    height: 5px;
+}
+
+.calendar-wrapper::-webkit-scrollbar-track {
+    background: #050a11;
+}
+
+.calendar-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0, 245, 255, 0.25);
+    border-radius: 999px;
+}
+
+.calendar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #00f5ff;
+}

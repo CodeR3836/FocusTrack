@@ -1,0 +1,359 @@
+
+<!-- =========================================================
+   FocusTrack — Cyberpunk Command Center UI
+   Only this stylesheet was modified. HTML & script.js are
+   untouched; every selector JS depends on is preserved.
+   ========================================================= -->
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="manifest" href="manifest.json">
+        <meta name="theme-color" content="#00f5ff">
+        <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+
+        <title>FocusTrack</title>
+    </head>
+
+    <body>
+
+        <!-- Header -->
+        <div class="header">
+            <p class="title">📋 FOCUS TRACK</p>
+            <span id="date"></span>
+        </div>
+
+
+        <!-- Task Statistics -->
+        <div class="task-info">
+
+            <div class="total-task">
+                <p>TOTAL TASKS</p>
+                <span id="total-task">0</span>
+            </div>
+
+            <div class="completed">
+                <p>COMPLETED</p>
+                <span id="completed">0</span>
+            </div>
+
+            <div class="remaining">
+                <p>REMAINING</p>
+                <span id="remaining">0</span>
+            </div>
+
+            <div class="progress">
+                <p>PROGRESS</p>
+                <span id="progress-percentage">0%</span>
+            </div>
+
+        </div>
+
+
+        <!-- Overall Progress -->
+        <div class="overall-progress">
+
+            <div class="progress-header">
+                <p>OVERALL PROGRESS</p>
+                <span id="progress-text">0 out of 0 done</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+        </div>
+
+
+        <!-- Main Todo Section -->
+        <div class="todo">
+
+            <div class="mainbody">
+
+                <!-- Task Input -->
+                <div class="inputs">
+
+                    <input 
+                        class="input-bar" 
+                        type="text" 
+                        placeholder="Add a New Task"
+                    >
+
+                    <!-- Task Category -->
+                    <select class="todo-type">
+                        <option value="work" selected>Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="health">Health</option>
+                        <option value="study">Study</option>
+                        <option value="others">Others</option>
+                    </select>
+
+                    <!-- Task Priority -->
+                    <select class="priority">
+                        <option value="medium" selected>Medium</option>
+                        <option value="easy">Easy</option>
+                        <option value="hard">Hard</option>
+                    </select>
+
+                    <button class="add-btn">
+                        ADD
+                    </button>
+
+                </div>
+
+
+                <!-- Task Status Filters -->
+                <div class="sections" id="sections">
+
+                    <div class="section" data-type="all">
+                        <p>ALL</p>
+                        <span id="allcount">0</span>
+                    </div>
+                    
+                    <div class="section" data-type="pending">
+                        <p>Pending</p>
+                        <span id="pendingcount">0</span>
+                    </div>
+
+                    <div class="section" data-type="done">
+                        <p>Done</p>
+                        <span id="donecount">0</span>
+                    </div>
+
+                </div>
+
+
+                <!-- Task List -->
+                <div class="tasklist" id="taskList"></div>
+
+
+                <!-- Category Statistics -->
+                <div class="category-card">
+
+                    <p>BY CATEGORY</p>
+
+                    <!-- Category Content -->
+                    <div class="category-content">
+
+                        <!-- Category Pie Chart -->
+                        <div class="category-chart">
+                            <div class="pie-chart" id="category-chart"></div>
+                        </div>
+
+
+                        <!-- Category List -->
+                        <div class="categorylist" id="categorylist">
+
+                            <!-- Work -->
+                            <div class="category-item" data-category="work">
+
+                                <div class="category-name">
+                                    <span class="category-box"></span>
+                                    <span>Work</span>
+                                </div>
+
+                                <span class="category-count">0 / 0</span>
+
+                            </div>
+
+
+                            <!-- Personal -->
+                            <div class="category-item" data-category="personal">
+
+                                <div class="category-name">
+                                    <span class="category-box"></span>
+                                    <span>Personal</span>
+                                </div>
+
+                                <span class="category-count">0 / 0</span>
+
+                            </div>
+
+
+                            <!-- Health -->
+                            <div class="category-item" data-category="health">
+
+                                <div class="category-name">
+                                    <span class="category-box"></span>
+                                    <span>Health</span>
+                                </div>
+
+                                <span class="category-count">0 / 0</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Category Progress Cards -->
+            <div class="status-cards" id="statusCards">
+
+                <!-- Work Progress -->
+                <div class="status-card" data-category="work">
+
+                    <div class="status-header">
+                        <strong>WORK</strong>
+                        <span class="status-progress-text">0 of 0 done</span>
+                    </div>
+
+                    <div class="status-progress-bar">
+                        <div class="status-progress-fill"></div>
+                    </div>
+
+                </div>
+
+
+                <!-- Study Progress -->
+                <div class="status-card" data-category="study">
+
+                    <div class="status-header">
+                        <strong>STUDY</strong>
+                        <span class="status-progress-text">0 of 0 done</span>
+                    </div>
+
+                    <div class="status-progress-bar">
+                        <div class="status-progress-fill"></div>
+                    </div>
+
+                </div>
+
+
+                <!-- Health Progress -->
+                <div class="status-card" data-category="health">
+
+                    <div class="status-header">
+                        <strong>HEALTH</strong>
+                        <span class="status-progress-text">0 of 0 done</span>
+                    </div>
+
+                    <div class="status-progress-bar">
+                        <div class="status-progress-fill"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="activity-calendar">
+
+            <div class="calendar-header">
+                <div>
+                    <p class="calendar-title">PRODUCTIVITY GRID</p>
+                    <span id="calendar-range">August 2026</span>
+                </div>
+
+                <button class="calendar-picker-btn" id="calendarPickerBtn">
+                    📅
+                </button>
+
+                <!-- Cyberpunk Month Picker -->
+                <div class="month-picker" id="monthPicker">
+
+                    <div class="month-picker-header">
+                        <span class="month-picker-label">SELECT MONTH</span>
+
+                        <button
+                            class="month-picker-close"
+                            id="monthPickerClose"
+                            type="button"
+                        >
+                        ×
+                        </button>
+                    </div>
+
+                    <div class="month-picker-current">
+                        <button
+                            class="month-nav-btn"
+                            id="monthPrevYear"
+                            type="button"
+                         >
+                         ◀
+                        </button>
+
+                        <span id="pickerYear">2026</span>
+
+                        <button
+                            class="month-nav-btn"
+                            id="monthNextYear"
+                            type="button"
+                        >
+                        ▶
+                        </button>
+                    </div>
+
+                    <div class="month-grid" id="monthGrid"></div>
+
+                    <div class="month-picker-footer">
+                        <button
+                            class="month-today-btn"
+                            id="monthTodayBtn"
+                            type="button"
+                        >
+                        CURRENT MONTH
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="calendar-wrapper" id="calendarWrapper"></div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+
+            <p>FocusTrack • Plan. Track. Complete.</p>
+            <p>Made By CodeR</p>
+
+            <a 
+                href="https://github.com/CodeR3836" 
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                GitHub ↗
+            </a>
+
+        </footer>
+
+
+        <script src="script.js"></script>
+        <script>
+            if ("serviceWorker" in navigator) {
+
+                window.addEventListener("load", () => {
+
+                    navigator.serviceWorker.register("./sw.js")
+                        .then(() => {
+                            console.log("FocusTrack Service Worker registered.");
+                        })
+                    .catch(error => {
+                        console.error(
+                            "Service Worker registration failed:",
+                            error
+                        );
+                    });
+
+                });
+
+            }
+        </script>
+
+    </body>
+
+</html>
