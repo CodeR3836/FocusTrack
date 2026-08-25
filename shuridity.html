@@ -1,0 +1,3347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>May Task Tracker 2026</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    >
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #22263a;
+            --border: #2e3348;
+            --text: #eef0f8;
+            --muted: #8b90a8;
+
+            --accent: #4f8ef7;
+
+            --work: #4f8ef7;
+            --personal: #a78bfa;
+            --health: #34d399;
+            --other: #94a3b8;
+            --social: #f472b6;
+            --webdev: #fb923c;
+
+            --high: #f87171;
+            --medium: #fbbf24;
+            --low: #6ee7b7;
+
+            --radius: 14px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 28px;
+        }
+
+        /* HEADER */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 36px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .date-badge {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-size: 15px;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* METRICS */
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .metric {
+            min-width: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            line-height: 1;
+        }
+
+        .metric-value.accent {
+            color: var(--accent);
+        }
+
+        /* OVERALL PROGRESS */
+
+        .overall-progress {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+
+        .overall-progress-label {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .progress-track {
+            width: 100%;
+            background: var(--surface2);
+            border-radius: 50px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 50px;
+            background: linear-gradient(90deg, var(--accent), #818cf8);
+            transition: width 0.5s ease;
+        }
+
+        /* UPCOMING */
+
+        .upcoming-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .upcoming-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .upcoming-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            font-size: 15px;
+            min-width: 0;
+        }
+
+        .upcoming-item > span:nth-child(2) {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .upcoming-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            color: var(--muted);
+            min-width: 80px;
+        }
+
+        .days-left {
+            margin-left: auto;
+            font-size: 13px;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .days-today {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--medium);
+        }
+
+        .days-soon {
+            background: rgba(248, 113, 113, 0.12);
+            color: var(--high);
+        }
+
+        .days-ok {
+            background: rgba(110, 231, 183, 0.12);
+            color: var(--low);
+        }
+
+        /* MAIN GRID */
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 20px;
+            margin-bottom: 24px;
+            align-items: start;
+        }
+
+        /* PANEL */
+
+        .panel {
+            min-width: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 18px;
+        }
+
+        /* ADD TASK */
+
+        .add-form {
+            display: grid;
+            grid-template-columns: minmax(150px, 1fr) auto auto auto auto;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .add-form input,
+        .add-form select {
+            min-width: 0;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            padding: 12px 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .add-form input:focus,
+        .add-form select:focus {
+            border-color: var(--accent);
+        }
+
+        .add-form input::placeholder {
+            color: var(--muted);
+        }
+
+        .add-form select option {
+            background: var(--surface2);
+        }
+
+        .add-form .date-input {
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 12px 22px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: opacity 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            opacity: 0.88;
+        }
+
+        .btn-add:active {
+            transform: scale(0.97);
+        }
+
+        /* FILTERS */
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--muted);
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            padding: 6px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: #3e4460;
+            color: var(--text);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .filter-btn .fcount {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            margin-left: 5px;
+            line-height: 1;
+        }
+
+        .filter-btn:not(.active) .fcount {
+            background: var(--border);
+            color: var(--muted);
+        }
+
+        .filter-sep {
+            width: 1px;
+            height: 28px;
+            background: var(--border);
+            align-self: center;
+            margin: 0 4px;
+            flex-shrink: 0;
+        }
+
+        /* TASK LIST */
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 440px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .task-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .task-item {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto auto;
+            align-items: center;
+            gap: 12px;
+            transition: border-color 0.2s, opacity 0.2s;
+        }
+
+        .task-item:hover {
+            border-color: #3e4460;
+        }
+
+        .task-item.done {
+            opacity: 0.5;
+        }
+
+        .task-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .task-check.checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .task-check.checked::after {
+            content: '';
+            width: 6px;
+            height: 10px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg) translate(-1px, -1px);
+            display: block;
+        }
+
+        .task-info {
+            min-width: 0;
+        }
+
+        .task-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .task-item.done .task-name {
+            text-decoration: line-through;
+            color: var(--muted);
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .task-due {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .task-due.overdue {
+            color: var(--high);
+        }
+
+        .tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+        }
+
+        .priority-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .p-high {
+            background: var(--high);
+        }
+
+        .p-medium {
+            background: var(--medium);
+        }
+
+        .p-low {
+            background: var(--low);
+        }
+
+        .btn-del {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            line-height: 1;
+            transition: color 0.2s, background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-del:hover {
+            color: var(--high);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        /* CHART PANEL */
+
+        .chart-wrap {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .legend-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .legend-left span:last-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .legend-count {
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        /* CATEGORY PROGRESS */
+
+        .cat-progress-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .cat-prog-item {
+            min-width: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+        }
+
+        .cat-prog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .cat-prog-name {
+            font-size: 16px;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cat-prog-pct {
+            font-family: 'DM Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .cat-prog-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        /* MODAL */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            width: 420px;
+            max-width: 95vw;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .modal label {
+            font-size: 14px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .modal input[type="text"],
+        .modal input[type="color"] {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            padding: 10px 14px;
+            width: 100%;
+            outline: none;
+            margin-bottom: 16px;
+        }
+
+        .modal input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+
+        .modal input[type="color"] {
+            padding: 4px 8px;
+            height: 44px;
+            cursor: pointer;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .btn-cancel {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            color: var(--text);
+        }
+
+        .btn-save-cat {
+            background: var(--accent);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .btn-save-cat:hover {
+            opacity: 0.88;
+        }
+
+        .custom-cat-list {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .custom-cat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 15px;
+        }
+
+        .custom-cat-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .custom-cat-del {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .custom-cat-del:hover {
+            color: var(--high);
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* SAVE INDICATOR */
+
+        .save-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--health);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+        }
+
+        .save-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--health);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .add-form {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .add-form input:first-child {
+                grid-column: 1 / -1;
+            }
+
+            .btn-add {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .cat-progress-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                font-size: 16px;
+            }
+
+            .app {
+                padding: 24px 14px;
+            }
+
+            .header {
+                align-items: flex-start;
+                flex-direction: column;
+                margin-bottom: 26px;
+            }
+
+            .header h1 {
+                font-size: 27px;
+            }
+
+            .header > div {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .metrics {
+                gap: 10px;
+            }
+
+            .metric {
+                padding: 16px;
+            }
+
+            .metric-value {
+                font-size: 28px;
+            }
+
+            .overall-progress,
+            .upcoming-section,
+            .panel {
+                padding: 18px;
+            }
+
+            .add-form {
+                grid-template-columns: 1fr;
+            }
+
+            .add-form input:first-child {
+                grid-column: auto;
+            }
+
+            .btn-add {
+                grid-column: auto;
+            }
+
+            .task-item {
+                grid-template-columns: auto minmax(0, 1fr) auto auto;
+                padding: 12px;
+                gap: 9px;
+            }
+
+            .task-name {
+                font-size: 15px;
+            }
+
+            .upcoming-item {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .upcoming-date {
+                min-width: auto;
+            }
+
+            .days-left {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .date-badge {
+                font-size: 12px;
+                padding: 7px 12px;
+            }
+
+            .overall-progress-label {
+                flex-direction: column;
+                gap: 3px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>📋 May Task Tracker</h1>
+
+        <div style="display:flex;align-items:center;gap:14px;">
+            <span class="save-indicator" id="saveIndicator">
+                <span class="save-dot"></span>
+                Saved
+            </span>
+
+            <span class="date-badge" id="todayDate"></span>
+        </div>
+
+    </div>
+
+
+    <!-- METRICS -->
+
+    <div class="metrics">
+
+        <div class="metric">
+            <div class="metric-label">Total tasks</div>
+            <div class="metric-value" id="m-total">0</div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-label">Completed</div>
+            <div class="metric-value accent" id="m-done">0</div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-label">Remaining</div>
+            <div class="metric-value" id="m-rem">0</div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-label">Progress</div>
+            <div class="metric-value accent" id="m-pct">0%</div>
+        </div>
+
+    </div>
+
+
+    <!-- OVERALL PROGRESS -->
+
+    <div class="overall-progress">
+
+        <div class="overall-progress-label">
+            <span>Overall completion</span>
+            <span id="prog-label">0 of 0 tasks done</span>
+        </div>
+
+        <div class="progress-track">
+            <div
+                class="progress-fill"
+                id="prog-fill"
+                style="width:0%"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <!-- UPCOMING DEADLINES -->
+
+    <div
+        class="upcoming-section"
+        id="upcoming-section"
+        style="display:none"
+    >
+
+        <div class="panel-title">
+            ⏰ Upcoming deadlines
+        </div>
+
+        <div
+            class="upcoming-list"
+            id="upcoming-list"
+        ></div>
+
+    </div>
+
+
+    <!-- MAIN GRID -->
+
+    <div class="main-grid">
+
+        <!-- TASK PANEL -->
+
+        <div class="panel">
+
+            <div class="panel-title">
+                Tasks
+            </div>
+
+
+            <!-- ADD TASK -->
+
+            <div class="add-form">
+
+                <input
+                    type="text"
+                    id="task-input"
+                    placeholder="Add a new task..."
+                    maxlength="200"
+                >
+
+                <select id="cat-select">
+
+                    <option value="work">
+                        Work
+                    </option>
+
+                    <option value="personal">
+                        Personal
+                    </option>
+
+                    <option value="health">
+                        Health
+                    </option>
+
+                    <option value="social">
+                        Social Media
+                    </option>
+
+                    <option value="webdev">
+                        Web Dev
+                    </option>
+
+                    <option value="other">
+                        Other
+                    </option>
+
+                    <option
+                        value="__custom__"
+                        style="color:#fbbf24"
+                    >
+                        ✏️ Customize...
+                    </option>
+
+                </select>
+
+
+                <select id="priority-select">
+
+                    <option value="medium">
+                        ⚡ Medium
+                    </option>
+
+                    <option value="high">
+                        🔴 High
+                    </option>
+
+                    <option value="low">
+                        🟢 Low
+                    </option>
+
+                </select>
+
+
+                <input
+                    type="date"
+                    id="due-input"
+                    class="date-input"
+                >
+
+
+                <button
+                    class="btn-add"
+                    id="add-btn"
+                    type="button"
+                >
+                    + Add
+                </button>
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <div
+                class="filters"
+                id="filters"
+            ></div>
+
+
+            <!-- TASK LIST -->
+
+            <div
+                class="task-list"
+                id="task-list"
+            ></div>
+
+        </div>
+
+
+        <!-- CHART -->
+
+        <div class="panel">
+
+            <div class="panel-title">
+                By category
+            </div>
+
+            <div class="chart-wrap">
+
+                <canvas
+                    id="pieChart"
+                    role="img"
+                    aria-label="Doughnut chart showing tasks by category"
+                ></canvas>
+
+            </div>
+
+            <div
+                class="legend"
+                id="legend"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CATEGORY PROGRESS -->
+
+    <div
+        class="cat-progress-grid"
+        id="cat-progress-grid"
+    ></div>
+
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        Tasks are saved automatically in your browser
+        &nbsp;·&nbsp;
+        May 2026
+
+        <br>
+
+        <span style="font-size:12px;opacity:0.6;">
+            Made by Shurid
+        </span>
+
+    </div>
+
+
+    <!-- CUSTOM CATEGORY MODAL -->
+
+    <div
+        class="modal-overlay"
+        id="modal-overlay"
+    >
+
+        <div class="modal">
+
+            <h2>
+                ✏️ Customize categories
+            </h2>
+
+
+            <div
+                class="custom-cat-list"
+                id="custom-cat-list"
+            ></div>
+
+
+            <label for="new-cat-name">
+                New category name
+            </label>
+
+            <input
+                type="text"
+                id="new-cat-name"
+                placeholder="e.g. Finance"
+                maxlength="20"
+            >
+
+
+            <label for="new-cat-color">
+                Pick a color
+            </label>
+
+            <input
+                type="color"
+                id="new-cat-color"
+                value="#e879f9"
+            >
+
+
+            <div class="modal-btns">
+
+                <button
+                    class="btn-cancel"
+                    id="close-modal-btn"
+                    type="button"
+                >
+                    Close
+                </button>
+
+                <button
+                    class="btn-save-cat"
+                    id="save-cat-btn"
+                    type="button"
+                >
+                    + Add category
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================================================
+       CATEGORY DATA
+    ========================================================= */
+
+    const BASE_CATS = [
+        'work',
+        'personal',
+        'health',
+        'social',
+        'webdev',
+        'other'
+    ];
+
+    const BASE_LABELS = {
+        work: 'Work',
+        personal: 'Personal',
+        health: 'Health',
+        social: 'Social Media',
+        webdev: 'Web Dev',
+        other: 'Other'
+    };
+
+    const BASE_COLORS = {
+        work: '#4f8ef7',
+        personal: '#a78bfa',
+        health: '#34d399',
+        social: '#f472b6',
+        webdev: '#fb923c',
+        other: '#94a3b8'
+    };
+
+
+    /* =========================================================
+       STATE
+    ========================================================= */
+
+    let customCats = [];
+    let tasks = [];
+    let filter = 'all';
+    let pieChart = null;
+    let saveTimer = null;
+
+
+    /* =========================================================
+       LOCAL STORAGE KEYS
+    ========================================================= */
+
+    const TASK_STORAGE_KEY = 'may_tasks_2026';
+    const CATEGORY_STORAGE_KEY = 'may_custom_cats_2026';
+
+
+    /* =========================================================
+       CATEGORY HELPERS
+    ========================================================= */
+
+    function allCats() {
+        return [
+            ...BASE_CATS,
+            ...customCats.map(category => category.id)
+        ];
+    }
+
+
+    function catLabel(id) {
+
+        if (BASE_LABELS[id]) {
+            return BASE_LABELS[id];
+        }
+
+        const custom = customCats.find(
+            category => category.id === id
+        );
+
+        return custom ? custom.label : id;
+    }
+
+
+    function catColor(id) {
+
+        if (BASE_COLORS[id]) {
+            return BASE_COLORS[id];
+        }
+
+        const custom = customCats.find(
+            category => category.id === id
+        );
+
+        return custom ? custom.color : '#94a3b8';
+    }
+
+
+    /* =========================================================
+       SECURITY HELPER
+    ========================================================= */
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* =========================================================
+       LOAD DATA
+    ========================================================= */
+
+    function load() {
+
+        try {
+
+            const savedTasks =
+                localStorage.getItem(TASK_STORAGE_KEY);
+
+            if (savedTasks !== null) {
+                tasks = JSON.parse(savedTasks);
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Could not load tasks:',
+                error
+            );
+
+            tasks = [];
+
+        }
+
+
+        try {
+
+            const savedCategories =
+                localStorage.getItem(CATEGORY_STORAGE_KEY);
+
+            if (savedCategories !== null) {
+                customCats = JSON.parse(savedCategories);
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Could not load categories:',
+                error
+            );
+
+            customCats = [];
+
+        }
+
+
+        /*
+         * Only create demo tasks if this is the first visit.
+         * If the user deletes every task, reload will keep it empty.
+         */
+
+        if (
+            localStorage.getItem(TASK_STORAGE_KEY) === null
+        ) {
+
+            tasks = [
+
+                {
+                    id: 1,
+                    name: 'Review project proposal',
+                    cat: 'work',
+                    priority: 'high',
+                    due: '2026-05-05',
+                    done: false
+                },
+
+                {
+                    id: 2,
+                    name: 'Morning run 30 mins',
+                    cat: 'health',
+                    priority: 'low',
+                    due: '2026-05-03',
+                    done: true
+                },
+
+                {
+                    id: 3,
+                    name: 'Call family',
+                    cat: 'personal',
+                    priority: 'medium',
+                    due: '2026-05-06',
+                    done: false
+                },
+
+                {
+                    id: 4,
+                    name: 'Submit expense report',
+                    cat: 'work',
+                    priority: 'medium',
+                    due: '2026-05-04',
+                    done: true
+                }
+
+            ];
+
+            save(false);
+
+        }
+
+    }
+
+
+    /* =========================================================
+       SAVE
+    ========================================================= */
+
+    function save(showIndicator = true) {
+
+        try {
+
+            localStorage.setItem(
+                TASK_STORAGE_KEY,
+                JSON.stringify(tasks)
+            );
+
+            localStorage.setItem(
+                CATEGORY_STORAGE_KEY,
+                JSON.stringify(customCats)
+            );
+
+        } catch (error) {
+
+            console.error(
+                'Could not save data:',
+                error
+            );
+
+            return;
+
+        }
+
+
+        if (!showIndicator) {
+            return;
+        }
+
+
+        const indicator =
+            document.getElementById('saveIndicator');
+
+        if (!indicator) {
+            return;
+        }
+
+
+        indicator.classList.add('show');
+
+        clearTimeout(saveTimer);
+
+        saveTimer = setTimeout(() => {
+
+            indicator.classList.remove('show');
+
+        }, 2000);
+
+    }
+
+
+    /* =========================================================
+       CATEGORY SELECT
+    ========================================================= */
+
+    function rebuildCatSelect() {
+
+        const select =
+            document.getElementById('cat-select');
+
+        const currentValue =
+            select.value;
+
+
+        select.innerHTML = [
+
+            ...BASE_CATS.map(category => {
+
+                return `
+                    <option value="${category}">
+                        ${BASE_LABELS[category]}
+                    </option>
+                `;
+
+            }),
+
+            ...customCats.map(category => {
+
+                return `
+                    <option value="${escapeHTML(category.id)}">
+                        ${escapeHTML(category.label)}
+                    </option>
+                `;
+
+            }),
+
+            `
+                <option
+                    value="__custom__"
+                    style="color:#fbbf24"
+                >
+                    ✏️ Customize...
+                </option>
+            `
+
+        ].join('');
+
+
+        if (
+            currentValue &&
+            currentValue !== '__custom__' &&
+            allCats().includes(currentValue)
+        ) {
+
+            select.value = currentValue;
+
+        } else {
+
+            select.value = 'work';
+
+        }
+
+    }
+
+
+    /* =========================================================
+       ADD TASK
+    ========================================================= */
+
+    function addTask() {
+
+        const input =
+            document.getElementById('task-input');
+
+        const categorySelect =
+            document.getElementById('cat-select');
+
+        const prioritySelect =
+            document.getElementById('priority-select');
+
+        const dueInput =
+            document.getElementById('due-input');
+
+
+        if (
+            categorySelect.value === '__custom__'
+        ) {
+
+            openModal();
+            return;
+
+        }
+
+
+        const name =
+            input.value.trim();
+
+        if (!name) {
+
+            input.focus();
+            return;
+
+        }
+
+
+        const cat =
+            categorySelect.value;
+
+        const priority =
+            prioritySelect.value;
+
+        const due =
+            dueInput.value;
+
+
+        const maxId =
+            tasks.reduce(
+                (max, task) =>
+                    Math.max(max, Number(task.id) || 0),
+                0
+            );
+
+
+        tasks.push({
+
+            id: maxId + 1,
+
+            name,
+
+            cat,
+
+            priority,
+
+            due,
+
+            done: false
+
+        });
+
+
+        input.value = '';
+
+
+        save();
+
+        render();
+
+        input.focus();
+
+    }
+
+
+    /* =========================================================
+       MODAL
+    ========================================================= */
+
+    function openModal() {
+
+        document
+            .getElementById('modal-overlay')
+            .classList.add('open');
+
+        renderModalList();
+
+        document
+            .getElementById('cat-select')
+            .value = 'work';
+
+        document
+            .getElementById('new-cat-name')
+            .focus();
+
+    }
+
+
+    function closeModal() {
+
+        document
+            .getElementById('modal-overlay')
+            .classList.remove('open');
+
+        rebuildCatSelect();
+
+        rebuildFilters();
+
+        render();
+
+    }
+
+
+    /* =========================================================
+       CUSTOM CATEGORY LIST
+    ========================================================= */
+
+    function renderModalList() {
+
+        const list =
+            document.getElementById('custom-cat-list');
+
+
+        if (!customCats.length) {
+
+            list.innerHTML = `
+                <div
+                    style="
+                        font-size:14px;
+                        color:var(--muted);
+                        margin-bottom:8px;
+                    "
+                >
+                    No custom categories yet.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        list.innerHTML =
+            customCats.map(category => {
+
+                return `
+                    <div class="custom-cat-item">
+
+                        <span
+                            class="custom-cat-dot"
+                            style="
+                                background:${escapeHTML(category.color)}
+                            "
+                        ></span>
+
+                        <span>
+                            ${escapeHTML(category.label)}
+                        </span>
+
+                        <button
+                            class="custom-cat-del"
+                            type="button"
+                            data-category-id="${escapeHTML(category.id)}"
+                            title="Delete category"
+                        >
+                            ×
+                        </button>
+
+                    </div>
+                `;
+
+            }).join('');
+
+
+        list
+            .querySelectorAll('.custom-cat-del')
+            .forEach(button => {
+
+                button.addEventListener(
+                    'click',
+                    () => {
+
+                        deleteCustomCat(
+                            button.dataset.categoryId
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    /* =========================================================
+       ADD CUSTOM CATEGORY
+    ========================================================= */
+
+    function saveCustomCat() {
+
+        const nameInput =
+            document.getElementById('new-cat-name');
+
+        const colorInput =
+            document.getElementById('new-cat-color');
+
+
+        const name =
+            nameInput.value.trim();
+
+        const color =
+            colorInput.value;
+
+
+        if (!name) {
+
+            nameInput.focus();
+            return;
+
+        }
+
+
+        /*
+         * Prevent duplicate category names.
+         */
+
+        const duplicate =
+            customCats.some(
+                category =>
+                    category.label.toLowerCase() ===
+                    name.toLowerCase()
+            );
+
+
+        if (duplicate) {
+
+            alert(
+                'A category with this name already exists.'
+            );
+
+            nameInput.focus();
+
+            return;
+
+        }
+
+
+        const id =
+            'custom_' + Date.now();
+
+
+        customCats.push({
+
+            id,
+
+            label: name,
+
+            color
+
+        });
+
+
+        nameInput.value = '';
+
+
+        save();
+
+        rebuildCatSelect();
+
+        renderModalList();
+
+        render();
+
+    }
+
+
+    /* =========================================================
+       DELETE CUSTOM CATEGORY
+    ========================================================= */
+
+    function deleteCustomCat(id) {
+
+        customCats =
+            customCats.filter(
+                category =>
+                    category.id !== id
+            );
+
+
+        /*
+         * Tasks using deleted category
+         * automatically move to Other.
+         */
+
+        tasks =
+            tasks.map(task => {
+
+                if (task.cat === id) {
+
+                    return {
+                        ...task,
+                        cat: 'other'
+                    };
+
+                }
+
+                return task;
+
+            });
+
+
+        if (
+            filter === 'cat:' + id
+        ) {
+
+            filter = 'all';
+
+        }
+
+
+        save();
+
+        rebuildCatSelect();
+
+        renderModalList();
+
+        render();
+
+    }
+
+
+    /* =========================================================
+       TASK ACTIONS
+    ========================================================= */
+
+    function toggleTask(id) {
+
+        const task =
+            tasks.find(
+                item => item.id === id
+            );
+
+
+        if (!task) {
+            return;
+        }
+
+
+        task.done =
+            !task.done;
+
+
+        save();
+
+        render();
+
+    }
+
+
+    function deleteTask(id) {
+
+        tasks =
+            tasks.filter(
+                task => task.id !== id
+            );
+
+
+        save();
+
+        render();
+
+    }
+
+
+    /* =========================================================
+       FILTER
+    ========================================================= */
+
+    function setFilter(value) {
+
+        filter = value;
+
+        rebuildFilters();
+
+        render();
+
+    }
+
+
+    function rebuildFilters() {
+
+        const today =
+            new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const todayCount =
+            tasks.filter(task => {
+
+                if (!task.due) {
+                    return false;
+                }
+
+
+                const due =
+                    new Date(task.due);
+
+                due.setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                );
+
+
+                return (
+                    due.getTime() ===
+                    today.getTime()
+                ) && !task.done;
+
+            }).length;
+
+
+        const staticButtons = [
+
+            {
+                f: 'all',
+                label: 'All',
+                count: tasks.length
+            },
+
+            {
+                f: 'pending',
+                label: 'Pending',
+                count:
+                    tasks.filter(
+                        task => !task.done
+                    ).length
+            },
+
+            {
+                f: 'done',
+                label: 'Done',
+                count:
+                    tasks.filter(
+                        task => task.done
+                    ).length
+            },
+
+            {
+                f: 'high',
+                label: '🔴 High',
+                count:
+                    tasks.filter(
+                        task =>
+                            task.priority === 'high' &&
+                            !task.done
+                    ).length
+            },
+
+            {
+                f: 'today',
+                label: 'Due today',
+                count: todayCount
+            }
+
+        ];
+
+
+        const activeCategories =
+            allCats().filter(
+                category =>
+                    tasks.some(
+                        task =>
+                            task.cat === category
+                    )
+            );
+
+
+        const filters =
+            document.getElementById('filters');
+
+
+        filters.innerHTML = [
+
+            ...staticButtons.map(button => {
+
+                return `
+                    <button
+                        class="filter-btn ${
+                            filter === button.f
+                                ? 'active'
+                                : ''
+                        }"
+                        type="button"
+                        data-filter="${button.f}"
+                    >
+                        ${button.label}
+
+                        <span class="fcount">
+                            ${button.count}
+                        </span>
+
+                    </button>
+                `;
+
+            }),
+
+
+            activeCategories.length
+                ? '<div class="filter-sep"></div>'
+                : '',
+
+
+            ...activeCategories.map(category => {
+
+                const color =
+                    catColor(category);
+
+                const count =
+                    tasks.filter(
+                        task =>
+                            task.cat === category
+                    ).length;
+
+
+                const categoryFilter =
+                    'cat:' + category;
+
+                const isActive =
+                    filter === categoryFilter;
+
+
+                return `
+                    <button
+                        class="filter-btn ${
+                            isActive
+                                ? 'active'
+                                : ''
+                        }"
+                        type="button"
+                        data-filter="${escapeHTML(categoryFilter)}"
+                        style="${
+                            isActive
+                                ? `
+                                    background:${color};
+                                    border-color:${color};
+                                `
+                                : `
+                                    border-color:${color}40;
+                                    color:${color};
+                                `
+                        }"
+                    >
+
+                        ${escapeHTML(catLabel(category))}
+
+                        <span class="fcount">
+                            ${count}
+                        </span>
+
+                    </button>
+                `;
+
+            })
+
+        ].join('');
+
+
+        filters
+            .querySelectorAll('.filter-btn')
+            .forEach(button => {
+
+                button.addEventListener(
+                    'click',
+                    () => {
+
+                        setFilter(
+                            button.dataset.filter
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    /* =========================================================
+       DATE HELPERS
+    ========================================================= */
+
+    function daysUntil(due) {
+
+        if (!due) {
+            return null;
+        }
+
+
+        const today =
+            new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const date =
+            new Date(due);
+
+        date.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        return Math.round(
+            (date - today) /
+            86400000
+        );
+
+    }
+
+
+    function formatDue(due) {
+
+        if (!due) {
+            return '';
+        }
+
+
+        return new Date(
+            due
+        ).toLocaleDateString(
+            'en-GB',
+            {
+                day: 'numeric',
+                month: 'short'
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       FILTERED TASKS
+    ========================================================= */
+
+    function getFiltered() {
+
+        const today =
+            new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        return tasks.filter(task => {
+
+            if (filter === 'pending') {
+                return !task.done;
+            }
+
+
+            if (filter === 'done') {
+                return task.done;
+            }
+
+
+            if (filter === 'high') {
+
+                return (
+                    task.priority === 'high' &&
+                    !task.done
+                );
+
+            }
+
+
+            if (filter === 'today') {
+
+                if (!task.due) {
+                    return false;
+                }
+
+
+                const due =
+                    new Date(task.due);
+
+                due.setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                );
+
+
+                return (
+                    due.getTime() ===
+                    today.getTime()
+                );
+
+            }
+
+
+            if (
+                filter.startsWith('cat:')
+            ) {
+
+                return (
+                    task.cat ===
+                    filter.slice(4)
+                );
+
+            }
+
+
+            return true;
+
+        });
+
+    }
+
+
+    /* =========================================================
+       RENDER TASK LIST
+    ========================================================= */
+
+    function renderTasks(filtered) {
+
+        const list =
+            document.getElementById('task-list');
+
+
+        if (!filtered.length) {
+
+            list.innerHTML = `
+                <div class="empty-state">
+                    No tasks here yet
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        list.innerHTML =
+            filtered.map(task => {
+
+                const days =
+                    daysUntil(task.due);
+
+
+                let dueHTML = '';
+
+
+                if (task.due) {
+
+                    const overdue =
+                        days !== null &&
+                        days < 0 &&
+                        !task.done;
+
+
+                    dueHTML = `
+                        <span
+                            class="task-due ${
+                                overdue
+                                    ? 'overdue'
+                                    : ''
+                            }"
+                        >
+                            ${
+                                overdue
+                                    ? '⚠ '
+                                    : ''
+                            }
+
+                            ${formatDue(task.due)}
+
+                            ${
+                                days === 0 &&
+                                !task.done
+                                    ? ' · Today'
+                                    : ''
+                            }
+
+                        </span>
+                    `;
+
+                }
+
+
+                const color =
+                    catColor(task.cat);
+
+                const label =
+                    catLabel(task.cat);
+
+                const background =
+                    color + '22';
+
+
+                return `
+                    <div
+                        class="task-item ${
+                            task.done
+                                ? 'done'
+                                : ''
+                        }"
+                    >
+
+                        <div
+                            class="task-check ${
+                                task.done
+                                    ? 'checked'
+                                    : ''
+                            }"
+                            data-task-id="${task.id}"
+                            role="button"
+                            tabindex="0"
+                            aria-label="${
+                                task.done
+                                    ? 'Mark task as pending'
+                                    : 'Mark task as completed'
+                            }"
+                        ></div>
+
+
+                        <div class="task-info">
+
+                            <div class="task-name">
+                                ${escapeHTML(task.name)}
+                            </div>
+
+
+                            <div class="task-meta">
+
+                                <span
+                                    class="tag"
+                                    style="
+                                        background:${background};
+                                        color:${color};
+                                    "
+                                >
+                                    ${escapeHTML(label)}
+                                </span>
+
+                                ${dueHTML}
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="priority-dot p-${task.priority}"
+                            title="${task.priority} priority"
+                        ></div>
+
+
+                        <button
+                            class="btn-del"
+                            type="button"
+                            data-task-id="${task.id}"
+                            title="Delete"
+                            aria-label="Delete task"
+                        >
+                            ×
+                        </button>
+
+                    </div>
+                `;
+
+            }).join('');
+
+
+        /*
+         * Checkbox listeners
+         */
+
+        list
+            .querySelectorAll('.task-check')
+            .forEach(check => {
+
+                const id =
+                    Number(check.dataset.taskId);
+
+
+                check.addEventListener(
+                    'click',
+                    () => toggleTask(id)
+                );
+
+
+                check.addEventListener(
+                    'keydown',
+                    event => {
+
+                        if (
+                            event.key === 'Enter' ||
+                            event.key === ' '
+                        ) {
+
+                            event.preventDefault();
+
+                            toggleTask(id);
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        /*
+         * Delete listeners
+         */
+
+        list
+            .querySelectorAll('.btn-del')
+            .forEach(button => {
+
+                button.addEventListener(
+                    'click',
+                    () => {
+
+                        const id =
+                            Number(
+                                button.dataset.taskId
+                            );
+
+                        deleteTask(id);
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    /* =========================================================
+       CHART
+    ========================================================= */
+
+    function renderChart() {
+
+        const categories =
+            allCats();
+
+
+        const nonZeroCategories =
+            categories.filter(
+                category =>
+                    tasks.some(
+                        task =>
+                            task.cat === category
+                    )
+            );
+
+
+        const labels =
+            nonZeroCategories.map(
+                catLabel
+            );
+
+
+        const data =
+            nonZeroCategories.map(
+                category =>
+                    tasks.filter(
+                        task =>
+                            task.cat === category
+                    ).length
+            );
+
+
+        const colors =
+            nonZeroCategories.map(
+                catColor
+            );
+
+
+        if (!pieChart) {
+
+            pieChart =
+                new Chart(
+                    document.getElementById(
+                        'pieChart'
+                    ),
+                    {
+                        type: 'doughnut',
+
+                        data: {
+
+                            labels,
+
+                            datasets: [
+
+                                {
+                                    data,
+
+                                    backgroundColor:
+                                        colors,
+
+                                    borderWidth: 3,
+
+                                    borderColor:
+                                        '#1a1d27'
+                                }
+
+                            ]
+
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio:
+                                false,
+
+                            cutout: '65%',
+
+                            plugins: {
+
+                                legend: {
+                                    display: false
+                                },
+
+                                tooltip: {
+
+                                    callbacks: {
+
+                                        label:
+                                            context =>
+                                                ` ${context.label}: ${context.parsed}`
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+        } else {
+
+            pieChart.data.labels =
+                labels;
+
+            pieChart.data.datasets[0].data =
+                data;
+
+            pieChart.data.datasets[0].backgroundColor =
+                colors;
+
+            pieChart.update();
+
+        }
+
+    }
+
+
+    /* =========================================================
+       LEGEND
+    ========================================================= */
+
+    function renderLegend() {
+
+        const legend =
+            document.getElementById('legend');
+
+
+        const categories =
+            allCats().filter(
+                category =>
+                    tasks.some(
+                        task =>
+                            task.cat === category
+                    )
+            );
+
+
+        legend.innerHTML =
+            categories.map(category => {
+
+                const count =
+                    tasks.filter(
+                        task =>
+                            task.cat === category
+                    ).length;
+
+
+                const done =
+                    tasks.filter(
+                        task =>
+                            task.cat === category &&
+                            task.done
+                    ).length;
+
+
+                return `
+                    <div class="legend-item">
+
+                        <div class="legend-left">
+
+                            <span
+                                class="legend-dot"
+                                style="
+                                    background:${catColor(category)}
+                                "
+                            ></span>
+
+                            <span>
+                                ${escapeHTML(
+                                    catLabel(category)
+                                )}
+                            </span>
+
+                        </div>
+
+                        <span class="legend-count">
+                            ${done}/${count}
+                        </span>
+
+                    </div>
+                `;
+
+            }).join('');
+
+    }
+
+
+    /* =========================================================
+       CATEGORY PROGRESS
+    ========================================================= */
+
+    function renderCategoryProgress() {
+
+        const grid =
+            document.getElementById(
+                'cat-progress-grid'
+            );
+
+
+        const categories =
+            allCats().filter(
+                category =>
+                    tasks.some(
+                        task =>
+                            task.cat === category
+                    )
+            );
+
+
+        grid.innerHTML =
+            categories.map(category => {
+
+                const categoryTasks =
+                    tasks.filter(
+                        task =>
+                            task.cat === category
+                    );
+
+
+                const done =
+                    categoryTasks.filter(
+                        task =>
+                            task.done
+                    ).length;
+
+
+                const percentage =
+                    categoryTasks.length
+                        ? Math.round(
+                            done /
+                            categoryTasks.length *
+                            100
+                        )
+                        : 0;
+
+
+                const color =
+                    catColor(category);
+
+
+                return `
+                    <div class="cat-prog-item">
+
+                        <div class="cat-prog-header">
+
+                            <span
+                                class="cat-prog-name"
+                                style="color:${color}"
+                            >
+                                ${escapeHTML(
+                                    catLabel(category)
+                                )}
+                            </span>
+
+                            <span
+                                class="cat-prog-pct"
+                                style="color:${color}"
+                            >
+                                ${percentage}%
+                            </span>
+
+                        </div>
+
+
+                        <div class="cat-prog-sub">
+                            ${done} of
+                            ${categoryTasks.length}
+                            done
+                        </div>
+
+
+                        <div class="progress-track">
+
+                            <div
+                                class="progress-fill"
+                                style="
+                                    width:${percentage}%;
+                                    background:${color};
+                                "
+                            ></div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join('');
+
+    }
+
+
+    /* =========================================================
+       UPCOMING DEADLINES
+    ========================================================= */
+
+    function renderUpcoming() {
+
+        const upcoming =
+            tasks
+
+                .filter(
+                    task =>
+                        !task.done &&
+                        task.due
+                )
+
+                .map(task => ({
+                    ...task,
+                    days: daysUntil(task.due)
+                }))
+
+                .filter(
+                    task =>
+                        task.days !== null &&
+                        task.days >= 0 &&
+                        task.days <= 7
+                )
+
+                .sort(
+                    (a, b) =>
+                        a.days - b.days
+                )
+
+                .slice(0, 5);
+
+
+        const section =
+            document.getElementById(
+                'upcoming-section'
+            );
+
+
+        const list =
+            document.getElementById(
+                'upcoming-list'
+            );
+
+
+        if (!upcoming.length) {
+
+            section.style.display = 'none';
+
+            list.innerHTML = '';
+
+            return;
+
+        }
+
+
+        section.style.display = '';
+
+
+        list.innerHTML =
+            upcoming.map(task => {
+
+                const className =
+                    task.days === 0
+                        ? 'days-today'
+                        : task.days <= 2
+                            ? 'days-soon'
+                            : 'days-ok';
+
+
+                const label =
+                    task.days === 0
+                        ? 'Today'
+                        : task.days === 1
+                            ? 'Tomorrow'
+                            : `${task.days} days`;
+
+
+                const color =
+                    catColor(task.cat);
+
+
+                return `
+                    <div class="upcoming-item">
+
+                        <span
+                            class="tag"
+                            style="
+                                background:${color}22;
+                                color:${color};
+                            "
+                        >
+                            ${escapeHTML(
+                                catLabel(task.cat)
+                            )}
+                        </span>
+
+
+                        <span>
+                            ${escapeHTML(task.name)}
+                        </span>
+
+
+                        <span class="upcoming-date">
+                            ${formatDue(task.due)}
+                        </span>
+
+
+                        <span
+                            class="days-left ${className}"
+                        >
+                            ${label}
+                        </span>
+
+                    </div>
+                `;
+
+            }).join('');
+
+    }
+
+
+    /* =========================================================
+       MAIN RENDER
+    ========================================================= */
+
+    function render() {
+
+        rebuildFilters();
+
+
+        const filtered =
+            getFiltered();
+
+
+        const total =
+            tasks.length;
+
+
+        const done =
+            tasks.filter(
+                task => task.done
+            ).length;
+
+
+        const remaining =
+            total - done;
+
+
+        const percentage =
+            total
+                ? Math.round(
+                    done /
+                    total *
+                    100
+                )
+                : 0;
+
+
+        /*
+         * Metrics
+         */
+
+        document.getElementById(
+            'm-total'
+        ).textContent =
+            total;
+
+
+        document.getElementById(
+            'm-done'
+        ).textContent =
+            done;
+
+
+        document.getElementById(
+            'm-rem'
+        ).textContent =
+            remaining;
+
+
+        document.getElementById(
+            'm-pct'
+        ).textContent =
+            percentage + '%';
+
+
+        /*
+         * Overall progress
+         */
+
+        document.getElementById(
+            'prog-fill'
+        ).style.width =
+            percentage + '%';
+
+
+        document.getElementById(
+            'prog-label'
+        ).textContent =
+            `${done} of ${total} tasks done`;
+
+
+        /*
+         * Other sections
+         */
+
+        renderTasks(filtered);
+
+        renderChart();
+
+        renderLegend();
+
+        renderCategoryProgress();
+
+        renderUpcoming();
+
+    }
+
+
+    /* =========================================================
+       INITIALIZATION
+    ========================================================= */
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+
+            const taskInput =
+                document.getElementById(
+                    'task-input'
+                );
+
+
+            const categorySelect =
+                document.getElementById(
+                    'cat-select'
+                );
+
+
+            const addButton =
+                document.getElementById(
+                    'add-btn'
+                );
+
+
+            const closeModalButton =
+                document.getElementById(
+                    'close-modal-btn'
+                );
+
+
+            const saveCategoryButton =
+                document.getElementById(
+                    'save-cat-btn'
+                );
+
+
+            const modalOverlay =
+                document.getElementById(
+                    'modal-overlay'
+                );
+
+
+            const newCategoryInput =
+                document.getElementById(
+                    'new-cat-name'
+                );
+
+
+            /*
+             * Add button
+             */
+
+            addButton.addEventListener(
+                'click',
+                addTask
+            );
+
+
+            /*
+             * Enter = Add task
+             */
+
+            taskInput.addEventListener(
+                'keydown',
+                event => {
+
+                    if (
+                        event.key === 'Enter'
+                    ) {
+
+                        event.preventDefault();
+
+                        addTask();
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Category selector
+             */
+
+            categorySelect.addEventListener(
+                'change',
+                event => {
+
+                    if (
+                        event.target.value ===
+                        '__custom__'
+                    ) {
+
+                        openModal();
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Modal buttons
+             */
+
+            closeModalButton.addEventListener(
+                'click',
+                closeModal
+            );
+
+
+            saveCategoryButton.addEventListener(
+                'click',
+                saveCustomCat
+            );
+
+
+            /*
+             * Enter = create custom category
+             */
+
+            newCategoryInput.addEventListener(
+                'keydown',
+                event => {
+
+                    if (
+                        event.key === 'Enter'
+                    ) {
+
+                        event.preventDefault();
+
+                        saveCustomCat();
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Click outside modal = close
+             */
+
+            modalOverlay.addEventListener(
+                'click',
+                event => {
+
+                    if (
+                        event.target ===
+                        event.currentTarget
+                    ) {
+
+                        closeModal();
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Escape = close modal
+             */
+
+            document.addEventListener(
+                'keydown',
+                event => {
+
+                    if (
+                        event.key === 'Escape' &&
+                        modalOverlay.classList.contains(
+                            'open'
+                        )
+                    ) {
+
+                        closeModal();
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Today's date
+             */
+
+            const now =
+                new Date();
+
+
+            document.getElementById(
+                'todayDate'
+            ).textContent =
+                now.toLocaleDateString(
+                    'en-GB',
+                    {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    }
+                );
+
+
+            /*
+             * Default due date = today
+             */
+
+            const year =
+                now.getFullYear();
+
+
+            const month =
+                String(
+                    now.getMonth() + 1
+                ).padStart(2, '0');
+
+
+            const day =
+                String(
+                    now.getDate()
+                ).padStart(2, '0');
+
+
+            document.getElementById(
+                'due-input'
+            ).value =
+                `${year}-${month}-${day}`;
+
+
+            /*
+             * Load saved data
+             */
+
+            load();
+
+
+            /*
+             * Build UI
+             */
+
+            rebuildCatSelect();
+
+            render();
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
