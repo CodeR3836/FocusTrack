@@ -89,7 +89,7 @@ body {
 .activity-calendar,
 .footer {
     width: 100%;
-    max-width: 850px;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
@@ -169,7 +169,7 @@ body {
     flex-direction: column;
     justify-content: center;
     padding: 18px;
-    min-height: 100px;
+    min-height: 150px;
     background: var(--card);
     border: 1px solid var(--border-soft);
     border-radius: 10px;
@@ -305,7 +305,7 @@ body {
 .progress-bar {
 
     width: 100%;
-    height: 10px;
+    height: 18px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(0, 245, 255, 0.08);
     border-radius: 999px;
@@ -357,7 +357,7 @@ body {
 
     flex: 1;
     min-width: 200px;
-    height: 42px;
+    height: 60px;
     padding: 0 14px;
     background: var(--card);
     border: 1px solid var(--border-soft);
@@ -389,7 +389,7 @@ body {
 .priority {
 
     width: 115px;
-    height: 42px;
+    height: 60px;
     padding: 0 12px;
     background: var(--card);
     border: 1px solid var(--border-soft);
@@ -433,7 +433,7 @@ body {
 .add-btn {
 
     width: 74px;
-    height: 42px;
+    height: 60px;
     border: 1px solid rgba(0, 245, 255, 0.5);
     border-radius: 6px;
     background: rgba(0, 245, 255, 0.08);
@@ -491,7 +491,7 @@ body {
     gap: 8px;
     flex: 1;
     min-width: 100px;
-    min-height: 42px;
+    min-height: 80px;
     padding: 0 15px;
     background: var(--card-alt);
     border: 1px solid #182936;
@@ -749,7 +749,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 22px;
+    padding: 25px;
     margin-bottom: 20px;
     background: var(--card-alt);
     border: 1px solid var(--border-soft);
@@ -812,8 +812,8 @@ body {
 
 .pie-chart {
 
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     flex-shrink: 0;
     border-radius: 50%;
     position: relative;
@@ -855,8 +855,9 @@ body {
 
     display: flex;
     align-items: center;
+    height: 55px;
     justify-content: space-between;
-    width: 100%;
+    width: 80%;
     padding: 11px 12px;
     background: var(--card-deep);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -912,7 +913,7 @@ body {
 .category-box {
 
     width: 9px;
-    height: 9px;
+    height: 20px;
     flex-shrink: 0;
     border-radius: 2px;
     box-shadow:
@@ -943,7 +944,7 @@ body {
 
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    gap: 20px;
     width: 100%;
     margin-top: 4px;
 
@@ -1006,7 +1007,7 @@ body {
 .status-progress-bar {
 
     width: 100%;
-    height: 6px;
+    height: 10px;
     overflow: hidden;
     background: #050a11;
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -1289,7 +1290,6 @@ body {
 
 .activity-calendar {
     width: 100%;
-    max-width: 700px;
     margin: 20px auto 0;
     padding: 22px;
     box-sizing: border-box;
