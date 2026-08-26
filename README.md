@@ -53,11 +53,9 @@ A visual productivity grid lets you see your completed activity across dates.
 
 Features include:
 
-- Cyberpunk calendar interface
 - Friday → Thursday weekday layout
 - Four-month timeline view
 - Current-day highlighting
 - Completed-day indicators
 - Custom month selector
 - Previous/next year navigation
-- Jump to current month
